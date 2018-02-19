@@ -4,6 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 //1 for in sound
 //2 for é sound
@@ -22,6 +24,7 @@ public class Encoder {
     private static final List<Character> MUTED_S_FOLLOWING_CONSONANT = Arrays.asList('B', 'J', 'M');
 
     private static final List<Character> DOUBLE_CONSONANT = Arrays.asList('C', 'P', 'R', 'T', 'Z', 'N', 'M', 'G', 'L', 'F');
+    private static final Set<Character> CONSONANTS = Arrays.asList('B','C','D','F','G','H','J','K','L','M','N','P','R','S','T','V','W','X','Z').stream().collect(Collectors.toSet());
 
     public static final List<Character> SOUND_2_ACCENTUATED_CHARS = Arrays.asList('É', 'È', 'Ê', 'Ë');
 
@@ -192,13 +195,25 @@ public class Encoder {
         }
 
         if (c == 'E') {
-            String nextAcc = operatePhonetic("2", charAt(tail, 0), substring(tail, 1, tail.length()));
-            if ("2".equals(nextAcc)) {
-                return acc;
-            } else {
-                nextAcc = StringUtils.substringAfter(nextAcc, "2");
+            // If followed by double consomns, sounds like 2
+            if((tail.length()>=2 && isDoubleConsonnant(tail.charAt(0),substring(tail,1,2)))
+                    || (tail.length()>=1 && tail.charAt(0) == 'R')
+                    ||(acc!= null && acc.length() > 0 && acc.charAt(acc.length()-1) == '5' )
+                    || (tail.length() >=2 && charAt(tail,0) == 'P' && charAt(tail,1) == 'T')
+                    || (tail.length() >=2 && charAt(tail,0) == 'S' && charAt(tail,1) == 'T')
+                    || (tail.length() ==1 && CONSONANTS.contains(charAt(tail,0)))){
+                String nextAcc = operatePhonetic("2",charAt(tail,0),substring(tail,1,tail.length()));
+                if ("2".equals(nextAcc)) {
+                    return acc;
+                }
+                return acc + "2" + StringUtils.substringAfter(nextAcc, "2");
             }
-            return acc + "2" + nextAcc;
+
+            String nextAcc = operatePhonetic("8", charAt(tail, 0), substring(tail, 1, tail.length()));
+            if ("8".equals(nextAcc)) {
+                return acc;
+            }
+            return acc + "8" + StringUtils.substringAfter(nextAcc, "8");
         }
 
         //Y as I
@@ -216,6 +231,16 @@ public class Encoder {
     }
 
     private static String replaceTwoLettersSounds(String acc, char c, String tail) {
+
+        // Case BV sounds like V : https://fr.wiktionary.org/wiki/Lefebvre
+        if(c == 'B' && tail.length()>1 && tail.charAt(0) == 'V'){
+            return operatePhonetic(acc + 'V',charAt(tail,1),substring(tail,2,tail.length()));
+        }
+
+        // Case VB sounds like V
+        if(c == 'V' && tail.length()>1 && tail.charAt(0) == 'B'){
+            return operatePhonetic(acc + 'V',charAt(tail,1),substring(tail,2,tail.length()));
+        }
 
         //Trailing ER, ET and EZ as 2
         if (c == 'E' && tail.length() == 1 && (tail.charAt(0) == 'R' || tail.charAt(0) == 'T' || tail.charAt(0) == 'Z')) {

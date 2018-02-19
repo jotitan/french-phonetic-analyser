@@ -14,17 +14,48 @@ public class FrenchPhoneticTest {
     }
 
     @Test
+    public void testEncodeContainsED() throws EncoderException {
+        FrenchPhonetic frenchPhonetic = new FrenchPhonetic();
+        frenchPhonetic.encode("medon");
+        frenchPhonetic.encode("meudon");
+    }
+
+    @Test
     public void testEncodeWithMutedContainsH() throws EncoderException {
         FrenchPhonetic frenchPhonetic = new FrenchPhonetic();
-        String encode = frenchPhonetic.encode("thermometre");
+        String encode = frenchPhonetic.encode("thermomètre");
         Assertions.assertThat(encode).isEqualTo("T2RMOM2TR");
     }
 
     @Test
+    @Ignore
     public void testEncodeWithDoubleF() throws EncoderException {
         FrenchPhonetic frenchPhonetic = new FrenchPhonetic();
         String encode = frenchPhonetic.encode("bouzeliffa");
         Assertions.assertThat(encode).isEqualTo("BOUZ2LIFA");
+    }
+
+    @Test
+    public void testEncodeWithBV() throws EncoderException {
+        FrenchPhonetic frenchPhonetic = new FrenchPhonetic();
+        String encodeLefevre = frenchPhonetic.encode("lefevre");
+        String encodeLefebvre = frenchPhonetic.encode("lefebvre");
+        Assertions.assertThat(encodeLefebvre).isEqualTo(encodeLefevre);
+    }
+
+    @Test
+    public void testEncodeWithVB() throws EncoderException {
+        FrenchPhonetic frenchPhonetic = new FrenchPhonetic();
+        String encodeLefevre = frenchPhonetic.encode("lefevre");
+        String encodeLefevbre = frenchPhonetic.encode("lefevbre");
+        Assertions.assertThat(encodeLefevbre).isEqualTo(encodeLefevre);
+    }
+
+    @Test
+    public void testEncodeEWithFinalL() throws EncoderException {
+        FrenchPhonetic frenchPhonetic = new FrenchPhonetic();
+        String encode = frenchPhonetic.encode("rappel");
+        Assertions.assertThat(encode).isEqualTo("RAP2L");
     }
 
     @Test
@@ -474,7 +505,7 @@ public class FrenchPhoneticTest {
     @Test
     public void testEncodeWithVowelTION() throws EncoderException {
         FrenchPhonetic frenchPhonetic = new FrenchPhonetic();
-        String encode = frenchPhonetic.encode("ebulition");
+        String encode = frenchPhonetic.encode("ébullition");
         Assertions.assertThat(encode).isEqualTo("2BULISI4");
     }
 
@@ -622,7 +653,7 @@ public class FrenchPhoneticTest {
     public void testLongerEANEqualsANE() throws EncoderException {
         FrenchPhonetic frenchPhonetic = new FrenchPhonetic();
         String encode = frenchPhonetic.encode("JEANNETON");
-        Assertions.assertThat(encode).isEqualTo("JAN2T4");
+        Assertions.assertThat(encode).isEqualTo("JAN8T4");
     }
 
     @Test
@@ -650,7 +681,7 @@ public class FrenchPhoneticTest {
     public void testFinalSS() throws EncoderException {
         FrenchPhonetic frenchPhonetic = new FrenchPhonetic();
         String encode = frenchPhonetic.encode("TOREGROSS");
-        Assertions.assertThat(encode).isEqualTo("TOR2GRO5");
+        Assertions.assertThat(encode).isEqualTo("TOR8GRO5");
     }
 
     @Test
@@ -719,7 +750,7 @@ public class FrenchPhoneticTest {
     @Test
     public void testEncodeEndingWithOSoundAndX() throws EncoderException {
         FrenchPhonetic frenchPhonetic = new FrenchPhonetic();
-        String result = frenchPhonetic.encode("etaux");
+        String result = frenchPhonetic.encode("étaux");
         Assertions.assertThat(result).isEqualTo("2TO");
     }
 
