@@ -23,6 +23,7 @@
     <packaging>pom</packaging>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>4.12</junit.version>
         <assertj.version>3.5.1</assertj.version>
         <jmh.version>1.11.2</jmh.version>
